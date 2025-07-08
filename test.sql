@@ -1,10 +1,15 @@
 select current_timestamp();
 select current_session();
 
-SET DATABASE_NAMES = ['DB1','DB2'];
+BEGIN
+  -- Define the array of database names
+  DECLARE database_names ARRAY;
+  database_names := ARRAY_CONSTRUCT('DB1', 'DB2');
 
-for db_name in database_names
-  'CREATE DATABASE IF NOT EXISTS' || database_names ;
-end for;
-
+  -- Loop through the array and create each database
+  FOR i IN 0 .. ARRAY_SIZE(database_names) - 1 DO
+    EXECUTE IMMEDIATE
+      'CREATE DATABASE IF NOT EXISTS ' || IDENTIFIER(database_names[i]);
+  END FOR;
+END;
 
